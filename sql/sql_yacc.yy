@@ -1430,6 +1430,7 @@ bool my_yyoverflow(short **a, YYSTYPE **b, ulong *yystacksize);
 %token  OR_OR_SYM                     /* OPERATOR */
 %token  OR_SYM                        /* SQL-2003-R */
 %token  OSC_PERCENT_SYM
+%token  OSC_SYM
 %token  OUTER
 %token  OUTFILE
 %token  OUT_SYM                       /* SQL-2003-R */
@@ -13559,7 +13560,8 @@ IDENT_sys:
 			    MYSQL_YYABORT;
 	    }
 
-	    if (get_hash_symbol($1.str, $1.length,0))
+        mysql_check_identified(thd, $1.str, $1.length);
+	    if (thd->have_begin && get_hash_symbol($1.str, $1.length,0))
 	    {
 		    my_error(ER_IDENT_USE_KEYWORD, MYF(0), $1.str);
 		    mysql_errmsg_append(thd);
@@ -13625,7 +13627,8 @@ ident:
             if ($$.str == NULL)
               MYSQL_YYABORT;
             $$.length= $1.length;
-	    if (get_hash_symbol($$.str, $$.length,0))
+        mysql_check_identified(thd, $$.str, $$.length);
+	    if (thd->have_begin && get_hash_symbol($$.str, $$.length,0))
 	    {
 		    my_error(ER_IDENT_USE_KEYWORD, MYF(0), $$.str);
 		    mysql_errmsg_append(thd);
@@ -15350,6 +15353,22 @@ inception_show_param:
             LEX *lex=Lex;
 	    lex->sql_command = SQLCOM_INCEPTION;
 	}
+	| GET_SYM OSC_SYM PROCESSLIST_SYM
+	{	
+            LEX *lex=Lex;
+	    lex->sql_command = SQLCOM_INCEPTION;
+	    lex->inception_cmd_type = INCEPTION_COMMAND_OSC_PROCESSLIST;
+	  /* Lex->wild= new (YYTHD->mem_root) String($3.str, $3.length, */
+		/* 			    system_charset_info); */
+	  /* if (Lex->wild == NULL) */
+	  /*     MYSQL_YYABORT; */
+	}
+    | GET_SYM opt_full PROCESSLIST_SYM
+    { 
+            LEX *lex=Lex;
+	    lex->sql_command = SQLCOM_INCEPTION;
+	    lex->inception_cmd_type = INCEPTION_COMMAND_PROCESSLIST;
+    }
 	| GET_SYM OSC_PERCENT_SYM  TEXT_STRING_sys
 	{	
             LEX *lex=Lex;

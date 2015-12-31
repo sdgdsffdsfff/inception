@@ -982,6 +982,7 @@ THD::THD(bool enable_plugins)
   system_thread= NON_SYSTEM_THREAD;
   cleanup_done= abort_on_warning= 0;
   m_release_resources_done= false;
+  thread_state = INCEPTION_STATE_INIT;
   peer_port= 0;					// For SHOW PROCESSLIST
   transaction.m_pending_rows_event= 0;
   transaction.flags.enabled= true;
@@ -1043,6 +1044,7 @@ THD::THD(bool enable_plugins)
   have_begin = FALSE;
   sql_cache = NULL;
   thd_sinfo = (sinfo_space_t*)my_malloc(sizeof(sinfo_space_t), MYF(0));
+  thd_sinfo->optype = INCEPTION_TYPE_LOCAL; 
   memset(thd_sinfo, 0, sizeof(sinfo_space_t));
   have_error_before = FALSE;
   parse_error = FALSE;

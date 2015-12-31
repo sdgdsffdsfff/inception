@@ -187,6 +187,7 @@ extern char* inception_osc_bin_dir;
 extern bool inception_osc_print_sql;
 extern bool inception_osc_print_none;
 extern bool inception_read_only;
+extern bool inception_check_identifier;
 extern bool inception_ddl_support;
 extern bool inception_osc_on;
 // extern ulong inception_osc_critical_connected;
@@ -340,7 +341,7 @@ extern ulong connection_errors_max_connection;
 extern ulong connection_errors_peer_addr;
 extern ulong log_warnings;
 
-#define ISQL_OPTION_COUNT 10
+#define ISQL_OPTION_COUNT 11
 
 
 /*
